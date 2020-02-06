@@ -1,0 +1,94 @@
+利用matlab进行双目标定及标定得到的参数含义
+标定参考链接：https://blog.csdn.net/weixin_40554881/article/details/80605649
+stereoParams = 
+
+  stereoParameters (具有属性):
+
+   Parameters of Two Cameras
+        CameraParameters1: [1x1 cameraParameters]
+        CameraParameters2: [1x1 cameraParameters]
+
+   Inter-camera Geometry
+        RotationOfCamera2: [3x3 double]
+     TranslationOfCamera2: [110.5005 0.0076 3.3097]
+        FundamentalMatrix: [3x3 double]
+          EssentialMatrix: [3x3 double]
+
+   Accuracy of Estimation
+    MeanReprojectionError: 0.4710  平均重投影误差
+
+   Calibration Settings
+              NumPatterns: 8
+              WorldPoints: [90x2 double]
+               WorldUnits: 'mm'
+
+
+CameraParameters1与CameraParameters2为左右摄像头的单独标定参数。
+
+
+1.      两个摄像头的平移和旋转参数
+stereoParams.TranslationOfCamera2：相机2相对于相机1的偏移矩阵，可以直接使用。
+stereoParams.RotationOfCamera2：相机2相对于相机1的旋转矩阵，需要转置之后才能使用。
+
+stereoParams.TranslationOfCamera2
+
+ans =110.5005    0.0076    3.3097
+
+ stereoParams.RotationOfCamera2
+
+ans =    0.9982    0.0407    0.0431
+   -0.0426    0.9981    0.0434
+   -0.0412   -0.0452    0.9981
+
+2.      摄像机内参矩阵
+IntrinsicMatrix存放的是摄像头的内参，只与摄像机的内部结构有关，需要先转置再使用。
+stereoParams.CameraParameters1.IntrinsicMatrix
+
+ans =  486.8830         0         0
+    1.3106  486.6497         0
+  308.4038  183.3596    1.0000
+
+stereoParams.CameraParameters2.IntrinsicMatrix
+
+ans =  485.6875         0         0
+    0.6488  485.9181         0
+  332.1003  197.6362    1.0000
+
+3.      畸变参数
+RadialDistortion：径向畸变，摄像头由于光学透镜的特性使得成像存在着径向畸变，可由K1，K2，K3确定。
+
+TangentialDistortion：切向畸变，由于装配方面的误差，传感器与光学镜头之间并非完全平行，因此成像存在切向畸变，可由两个参数P1，P2确定。
+
+使用时，需要注意参数的排放顺序，即K1，K2，P1，P2，K3。切记不可弄错，否则后续的立体匹配会出现很大的偏差。
+
+stereoParams.CameraParameters1.RadialDistortion
+
+ans =   -0.4505    1.0999   -3.3532
+
+stereoParams.CameraParameters2.RadialDistortion
+
+ans =   -0.3817   -0.1989    1.7776
+
+stereoParams.CameraParameters1.TangentialDistortion
+
+ans =    0.0031    0.0021
+
+stereoParams.CameraParameters2.TangentialDistortion
+
+ans =   -0.0023   -0.0014
+
+stereoParams.CameraParameters1.FocalLength两相机焦距不完全一致
+
+ans =486.8830  486.6497
+
+stereoParams.CameraParameters2.FocalLength
+
+ans =485.6875  485.9181
+
+stereoParams.CameraParameters1.PrincipalPoint  主点坐标
+
+ans =  308.4038  183.3596
+
+stereoParams.CameraParameters2.PrincipalPoint
+
+ans =  332.1003  197.6362
