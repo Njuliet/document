@@ -67,3 +67,5 @@ http://m.elecfans.com/article/632470.html
 
 学习OpenCV双目测距原理及常见问题解答
 https://www.cnblogs.com/yuanlibin/p/9460419.html
+
+一般如果尺寸设定准确的话，通过立体标定得出的Translation的向量的第一个分量Tx的绝对值就是左右摄像头的中心距
